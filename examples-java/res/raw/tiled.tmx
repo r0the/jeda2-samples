@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="left-up" width="20" height="10" tilewidth="70" tileheight="70">
+ <tileset firstgid="1" name="aliens" tilewidth="70" tileheight="70">
+  <image source="aliens.png" width="210" height="350"/>
+  <tile id="0">
+   <objectgroup draworder="index">
+    <object x="2.41556" y="1.59566" width="65" height="66" rotation="0.70647">
+     <ellipse/>
+    </object>
+    <object x="7" y="51" width="47" height="52"/>
+   </objectgroup>
+  </tile>
+  <tile id="9">
+   <objectgroup draworder="index">
+    <object x="0.5" y="-0.5" width="68" height="68.5">
+     <ellipse/>
+    </object>
+   </objectgroup>
+  </tile>
+ </tileset>
+ <tileset firstgid="16" name="blocks-70x140" tilewidth="70" tileheight="140">
+  <image source="blocks-70x140.png" width="350" height="700"/>
+  <tile id="5">
+   <objectgroup draworder="index">
+    <object x="1" y="1" width="68.5" height="138.5"/>
+   </objectgroup>
+   <animation>
+    <frame tileid="5" duration="500"/>
+    <frame tileid="6" duration="500"/>
+    <frame tileid="7" duration="500"/>
+   </animation>
+  </tile>
+ </tileset>
+ <tileset firstgid="41" name="blocks-220x70" tilewidth="220" tileheight="70">
+  <tileoffset x="30" y="0"/>
+  <image source="blocks-220x70.png" width="1100" height="350"/>
+ </tileset>
+ <tileset firstgid="66" name="blocks-140x70" tilewidth="140" tileheight="70">
+  <image source="blocks-140x70.png" width="700" height="700"/>
+  <tile id="25">
+   <objectgroup draworder="index">
+    <object x="0.5" y="2" width="138.5" height="67"/>
+   </objectgroup>
+  </tile>
+ </tileset>
+ <tileset firstgid="116" name="blocks-70x70" tilewidth="70" tileheight="70">
+  <image source="blocks-70x70.png" width="350" height="1050"/>
+  <tile id="20">
+   <objectgroup draworder="index">
+    <object x="1" y="2" width="68" height="67">
+     <ellipse/>
+    </object>
+   </objectgroup>
+  </tile>
+ </tileset>
+ <imagelayer name="Hintergrund 1" y="-100">
+  <image source="colored_desert.png"/>
+ </imagelayer>
+ <imagelayer name="Hintergrund 2" x="1024" y="-100">
+  <image source="colored_desert.png"/>
+ </imagelayer>
+ <layer name="Statisch" width="20" height="10">
+  <properties>
+   <property name="type" value="static"/>
+  </properties>
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFo2D4gGgq0wCfiAOP
+  </data>
+ </layer>
+ <layer name="Dynamisch" width="20" height="10">
+  <properties>
+   <property name="type" value="dynamic"/>
+  </properties>
+  <data encoding="base64" compression="zlib">
+   eJxjYMAPjNH4eljUuBMwg1hArDnY3BAIpXsJqEMGokS6pxevKvzmCiCJoftPFAcbXQyXP9zR1IFAIDaFRABc7sNmBwOaGDb/4nIfuh3Y/IZNDGQGzG/I5uJzHzUAAO61B9I=
+  </data>
+ </layer>
+ <objectgroup name="Objektebene 1" visible="0" opacity="0.98">
+  <properties>
+   <property name="physics" value="dynamic"/>
+  </properties>
+  <object name="player" gid="10" x="405" y="99"/>
+  <object x="496" y="52" width="123" height="67"/>
+  <object x="206" y="47" width="74" height="74">
+   <ellipse/>
+  </object>
+  <object x="998" y="132">
+   <polygon points="0,0 120,-50 136,44 -2,95 -65,29 2,-23"/>
+  </object>
+  <object x="746" y="176">
+   <polyline points="0,0 -15,108 -222,93 -126,-6"/>
+  </object>
+  <object gid="1" x="1149" y="116"/>
+ </objectgroup>
+</map>
