@@ -1,40 +1,38 @@
-package ch.jeda.example;
+package ch.jeda.asteroids;
 
-import ch.jeda.*;
-import ch.jeda.event.*;
+import ch.jeda.event.KeyDownListener;
+import ch.jeda.event.KeyEvent;
+import ch.jeda.event.KeyUpListener;
 import ch.jeda.geometry.Circle;
-import ch.jeda.physics.*;
-import ch.jeda.ui.*;
+import ch.jeda.physics.Body;
+import ch.jeda.physics.BodyType;
+import ch.jeda.ui.Alignment;
+import ch.jeda.ui.Canvas;
+import ch.jeda.ui.Image;
 
-public class Space extends Program {
+public class Ship extends SpaceBody implements KeyDownListener, KeyUpListener {
 
-    @Override
-    public void run() {
-        PhysicsView view = new PhysicsView();
-        view.setGravity(0, 0);
-        view.getBackground().setAlignment(Alignment.BOTTOM_LEFT);
-        view.getBackground().drawImage(0, 0, new Image("res:drawable/space.jpg"));
-        Body ship = new Ship();
-        ship.setPosition(view.getWidthM() / 2, view.getHeightM() / 2);
-        view.add(ship);
-    }
-}
-
-class Ship extends Body implements KeyDownListener, KeyUpListener {
-
-    private static final int RADIUS = 1;
+    private static final double GUN_FIRE_DELAY = 0.2;
+    private boolean shoot;
     private boolean rotateLeft;
     private boolean rotateRight;
     private boolean thrustOn;
+    private double gunCooldown;
     private Image thrust;
     private Image steer;
+    private double energy;
 
     public Ship() {
         setImage(new Image("res:drawable/ship.png"), 2, 2);
         thrust = new Image("res:drawable/thrust.png");
         steer = new Image("res:drawable/steer.png");
         setType(BodyType.DYNAMIC);
-        addShape(new Circle(0, 0, RADIUS));
+        addShape(new Circle(0, 0, 1));
+        energy = 100;
+    }
+
+    public double getEnergy() {
+        return energy;
     }
 
     @Override
@@ -56,6 +54,9 @@ class Ship extends Body implements KeyDownListener, KeyUpListener {
     @Override
     public void onKeyDown(KeyEvent event) {
         switch (event.getKey()) {
+            case SPACE:
+                shoot = true;
+                break;
             case UP:
                 thrustOn = true;
                 break;
@@ -71,6 +72,9 @@ class Ship extends Body implements KeyDownListener, KeyUpListener {
     @Override
     public void onKeyUp(KeyEvent event) {
         switch (event.getKey()) {
+            case SPACE:
+                shoot = false;
+                break;
             case UP:
                 thrustOn = false;
                 break;
@@ -85,6 +89,7 @@ class Ship extends Body implements KeyDownListener, KeyUpListener {
 
     @Override
     public void step(double dt) {
+        super.step(dt);
         if (thrustOn) {
             applyLocalForceDeg(20, 0);
         }
@@ -96,22 +101,24 @@ class Ship extends Body implements KeyDownListener, KeyUpListener {
         if (rotateRight) {
             applyLocalForceDeg(10, 0, 0, 1);
         }
-
-        // Space wraps around at the edges of the view
-        if (getX() < -RADIUS) {
-            setPosition(getView().getWidthM() + RADIUS - 1, getY());
+        if (gunCooldown > 0) {
+            gunCooldown = gunCooldown - dt;
         }
 
-        if (getY() < -RADIUS) {
-            setPosition(getX(), getView().getHeightM() + RADIUS - 1);
+        if (gunCooldown <= 0 && shoot) {
+            double x = getX() + Math.cos(getAngleRad()) * 1.5;
+            double y = getY() + Math.sin(getAngleRad()) * 1.5;
+            Shot bullet = new Shot();
+            bullet.setPosition(x, y);
+            bullet.setVelocity(5 * Math.cos(getAngleRad()), 5 * Math.sin(getAngleRad()));
+            bullet.setAngleRad(getAngleRad());
+            getView().add(bullet);
+            gunCooldown = GUN_FIRE_DELAY;
         }
+    }
 
-        if (getX() >= getView().getWidthM() + RADIUS) {
-            setPosition(-RADIUS, getY());
-        }
-
-        if (getY() >= getView().getHeightM() + RADIUS) {
-            setPosition(getX(), -RADIUS);
-        }
+    @Override
+    protected void beginContact(Body other) {
+        energy = energy - 5;
     }
 }

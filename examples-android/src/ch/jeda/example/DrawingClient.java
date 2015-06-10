@@ -5,11 +5,12 @@ import ch.jeda.*;
 import ch.jeda.event.*;
 import ch.jeda.ui.*;
 
-public class DrawingClient extends Program implements PointerDownListener,
+public class DrawingClient extends Program implements ActionListener,
+                                                      PointerDownListener,
                                                       PointerMovedListener,
-                                                      KeyUpListener,
                                                       MessageReceivedListener {
 
+    private static final int ACTION_CONNECT = 0;
     private View view;
     private StringInputField serverNameInput;
     private TextButton connectButton;
@@ -28,7 +29,7 @@ public class DrawingClient extends Program implements PointerDownListener,
         serverNameInput = new StringInputField(x, y, Alignment.CENTER);
         serverNameInput.setHintText("Server name");
         y = y - 80;
-        connectButton = new TextButton(x, y, "Verbinden", Alignment.CENTER);
+        connectButton = new TextButton(x, y, "Verbinden", ACTION_CONNECT, Alignment.CENTER);
         connectButton.setKey(Key.ENTER);
         y = y - 80;
         message = new Text(x, y, "", Alignment.CENTER);
@@ -36,6 +37,23 @@ public class DrawingClient extends Program implements PointerDownListener,
         view.add(serverNameInput, connectButton, message);
         serverNameInput.select();
         view.addEventListener(this);
+    }
+
+    @Override
+    public void onAction(ActionEvent event) {
+        if (event.getId() == ACTION_CONNECT && connection == null) {
+            connection = new TcpConnection();
+            if (connection.open(serverNameInput.getValue(), 1248)) {
+                view.remove(serverNameInput);
+                view.remove(connectButton);
+                clear();
+            }
+            else {
+                connection = null;
+                message.setText("Verbindung mit Server nicht möglich.");
+                serverNameInput.select();
+            }
+        }
     }
 
     @Override
@@ -53,23 +71,6 @@ public class DrawingClient extends Program implements PointerDownListener,
         color = event.getData().readObject("color");
     }
 
-    @Override
-    public void onKeyUp(KeyEvent event) {
-        if (event.getKey() == Key.ENTER && connection == null) {
-            connection = new TcpConnection();
-            if (connection.open(serverNameInput.getValue(), 1248)) {
-                view.remove(serverNameInput);
-                view.remove(connectButton);
-                clear();
-            }
-            else {
-                connection = null;
-                message.setText("Verbindung mit Server nicht möglich.");
-                serverNameInput.select();
-            }
-        }
-    }
-
     private void clear() {
         view.getBackground().setColor(Color.WHITE);
         view.getBackground().fill();
@@ -79,12 +80,11 @@ public class DrawingClient extends Program implements PointerDownListener,
     private void draw(PointerEvent event) {
         if (connection != null) {
             Data data = new Data();
-            data.writeFloat("x", event.getCanvasX());
-            data.writeFloat("y", event.getCanvasY());
+            data.writeFloat("x", event.getViewX());
+            data.writeFloat("y", event.getViewY());
             connection.sendData(data);
             view.getBackground().setColor(color);
-            view.getBackground().fillCircle(event.getCanvasX(), event.getCanvasY(), radius);
+            view.getBackground().fillCircle(event.getViewX(), event.getViewY(), radius);
         }
     }
-
 }

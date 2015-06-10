@@ -5,3 +5,6 @@
 /test/gen/
 /test/bin/
 /examples-android/bin/
+/asteroids/nbproject/private/
+/asteroids/build/
+/asteroids/dist/

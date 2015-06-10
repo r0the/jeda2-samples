@@ -17,6 +17,6 @@ public class DrawingSimple extends Program implements PointerMovedListener {
 
     @Override
     public void onPointerMoved(PointerEvent event) {
-        view.getBackground().fillCircle(event.getCanvasX(), event.getCanvasY(), radius);
+        view.getBackground().fillCircle(event.getViewX(), event.getViewY(), radius);
     }
 }
