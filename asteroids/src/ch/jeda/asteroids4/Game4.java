@@ -1,4 +1,4 @@
-package ch.jeda.asteroids1;
+package ch.jeda.asteroids4;
 
 import ch.jeda.*;
 import ch.jeda.event.*;
@@ -6,9 +6,12 @@ import ch.jeda.geometry.*;
 import ch.jeda.physics.*;
 import ch.jeda.ui.*;
 
-public class Game1 extends Program {
+public class Game4 extends Program {
 
     private PhysicsView view;
+    private MainMenu mainMenu;
+    private Ship ship;
+    private GameInfo gameInfo;
 
     @Override
     public void run() {
@@ -17,8 +20,12 @@ public class Game1 extends Program {
         bg.drawImage(0, 0, bg.getWidth(), bg.getHeight(), new Image("res:drawable/space.jpg"));
 
         view.setGravity(0, 0);
-        view.add(new Box(view));
         addAsteroids(10);
+        mainMenu = new MainMenu(this);
+        ship = new Ship(this);
+        gameInfo = new GameInfo(ship);
+        gameInfo.setPosition(10, view.getHeightDp() - 10);
+        view.add(gameInfo, mainMenu);
     }
 
     public void addAsteroids(int count) {
@@ -34,5 +41,23 @@ public class Game1 extends Program {
             view.add(asteroid);
             count = count - 1;
         }
+    }
+
+    public void gameOver() {
+        view.remove(ship);
+        view.add(mainMenu);
+        mainMenu.setGameOver();
+    }
+
+    public void startGame() {
+        for (Asteroid asteroid : view.getElements(Asteroid.class)) {
+            asteroid.remove();
+        }
+
+        view.remove(mainMenu);
+        ship.setPosition(view.getCenterX(), view.getCenterY());
+        ship.init();
+        view.add(ship);
+        addAsteroids(10);
     }
 }

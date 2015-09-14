@@ -1,4 +1,4 @@
-package ch.jeda.asteroids1;
+package ch.jeda.asteroids5;
 
 import ch.jeda.*;
 import ch.jeda.event.*;
@@ -6,7 +6,7 @@ import ch.jeda.geometry.*;
 import ch.jeda.physics.*;
 import ch.jeda.ui.*;
 
-public class Game1 extends Program {
+public class Game5 extends Program {
 
     private PhysicsView view;
 
@@ -15,10 +15,14 @@ public class Game1 extends Program {
         view = new PhysicsView();
         Canvas bg = view.getBackground();
         bg.drawImage(0, 0, bg.getWidth(), bg.getHeight(), new Image("res:drawable/space.jpg"));
-
+        view.setDebugging(true);
         view.setGravity(0, 0);
-        view.add(new Box(view));
         addAsteroids(10);
+        Ship ship = new Ship();
+        ship.setPosition(view.getCenterX(), view.getCenterY());
+        GameInfo gameInfo = new GameInfo(ship);
+        gameInfo.setPosition(10, view.getHeightDp() - 10);
+        view.add(ship, gameInfo);
     }
 
     public void addAsteroids(int count) {

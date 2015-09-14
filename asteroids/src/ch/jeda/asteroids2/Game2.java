@@ -1,4 +1,4 @@
-package ch.jeda.asteroids1;
+package ch.jeda.asteroids2;
 
 import ch.jeda.*;
 import ch.jeda.event.*;
@@ -6,7 +6,7 @@ import ch.jeda.geometry.*;
 import ch.jeda.physics.*;
 import ch.jeda.ui.*;
 
-public class Game1 extends Program {
+public class Game2 extends Program {
 
     private PhysicsView view;
 
@@ -19,6 +19,9 @@ public class Game1 extends Program {
         view.setGravity(0, 0);
         view.add(new Box(view));
         addAsteroids(10);
+        Ship ship = new Ship();
+        ship.setPosition(view.getCenterX(), view.getCenterY());
+        view.add(ship);
     }
 
     public void addAsteroids(int count) {
