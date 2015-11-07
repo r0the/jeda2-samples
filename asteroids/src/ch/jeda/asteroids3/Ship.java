@@ -15,6 +15,7 @@ public class Ship extends SpaceBody implements KeyDownListener, KeyUpListener {
     private Image steer;
 
     public Ship() {
+        setDrawOrder(-1);
         setImage(new Image("res:drawable/ship.png"), 2, 2);
         addShape(new Circle(0, 0, 1));
         thrust = new Image("res:drawable/thrust.png");

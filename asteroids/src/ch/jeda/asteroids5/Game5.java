@@ -9,20 +9,23 @@ import ch.jeda.ui.*;
 public class Game5 extends Program {
 
     private PhysicsView view;
+    private MainMenu mainMenu;
+    private Ship ship;
+    private GameInfo gameInfo;
 
     @Override
     public void run() {
         view = new PhysicsView();
         Canvas bg = view.getBackground();
         bg.drawImage(0, 0, bg.getWidth(), bg.getHeight(), new Image("res:drawable/space.jpg"));
-        view.setDebugging(true);
+
         view.setGravity(0, 0);
         addAsteroids(10);
-        Ship ship = new Ship();
-        ship.setPosition(view.getCenterX(), view.getCenterY());
-        GameInfo gameInfo = new GameInfo(ship);
+        mainMenu = new MainMenu(this);
+        ship = new Ship(this);
+        gameInfo = new GameInfo(ship);
         gameInfo.setPosition(10, view.getHeightDp() - 10);
-        view.add(ship, gameInfo);
+        view.add(gameInfo, mainMenu);
     }
 
     public void addAsteroids(int count) {
@@ -38,5 +41,23 @@ public class Game5 extends Program {
             view.add(asteroid);
             count = count - 1;
         }
+    }
+
+    public void gameOver() {
+        view.remove(ship);
+        view.add(mainMenu);
+        mainMenu.setGameOver();
+    }
+
+    public void startGame() {
+        for (Asteroid asteroid : view.getElements(Asteroid.class)) {
+            asteroid.remove();
+        }
+
+        view.remove(mainMenu);
+        ship.setPosition(view.getCenterX(), view.getCenterY());
+        ship.init();
+        view.add(ship);
+        addAsteroids(10);
     }
 }

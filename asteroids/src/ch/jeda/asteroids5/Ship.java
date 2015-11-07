@@ -17,8 +17,11 @@ public class Ship extends SpaceBody implements KeyDownListener, KeyUpListener {
     private double energy;
     private boolean shoot;
     private double gunCooldown;
+    private Game5 game;
 
-    public Ship() {
+    public Ship(Game5 game) {
+        this.game = game;
+        setDrawOrder(-1);
         setImage(new Image("res:drawable/ship.png"), 2, 2);
         addShape(new Circle(0, 0, 1));
         thrust = new Image("res:drawable/thrust.png");
@@ -99,6 +102,16 @@ public class Ship extends SpaceBody implements KeyDownListener, KeyUpListener {
         }
     }
 
+    public void init() {
+        energy = 10;
+        setAngleRad(0);
+        setAngularVelocity(0);
+        setVelocity(0, 0);
+        rightEngine = false;
+        leftEngine = false;
+        mainEngine = false;
+    }
+
     @Override
     protected void beginContact(Body other) {
         if (other instanceof Asteroid) {
@@ -124,6 +137,7 @@ public class Ship extends SpaceBody implements KeyDownListener, KeyUpListener {
         if (energy <= 0) {
             getView().add(new Explosion(this));
             remove();
+            game.gameOver();
         }
     }
 }

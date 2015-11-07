@@ -14,11 +14,12 @@ public class Explosion extends Body {
     private double growthPerSecond;
 
     public Explosion(Body body) {
+        setDrawOrder(-1);
         setPosition(body.getX(), body.getY());
         setVelocity(body.getVx(), body.getVy());
         radius = 0.1;
         maxRadius = 10;
-        growthPerSecond = 30;
+        growthPerSecond = 10;
         image = new Image("res:drawable/explosion00.png");
         setImage(image, radius, radius);
     }
@@ -30,6 +31,8 @@ public class Explosion extends Body {
         setImage(image, radius, radius);
         if (radius > maxRadius) {
             remove();
+            MainMenu m = getView().getElement(MainMenu.class, "MainMenu");
+            m.setGameOver();
         }
     }
 }

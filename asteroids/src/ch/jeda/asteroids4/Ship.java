@@ -13,11 +13,14 @@ public class Ship extends SpaceBody implements KeyDownListener, KeyUpListener {
     private boolean mainEngine;
     private Image thrust;
     private Image steer;
+    private boolean invulnerable;
+    private double invulnerableTimeout;
     private double energy;
     private Game4 game;
 
     public Ship(Game4 game) {
         this.game = game;
+        setDrawOrder(-1);
         setImage(new Image("res:drawable/ship.png"), 2, 2);
         addShape(new Circle(0, 0, 1));
         thrust = new Image("res:drawable/thrust.png");
@@ -74,6 +77,10 @@ public class Ship extends SpaceBody implements KeyDownListener, KeyUpListener {
     @Override
     public void step(double dt) {
         super.step(dt);
+        if (invulnerableTimeout < getSimulationTime()) {
+            invulnerable = false;
+        }
+
         if (mainEngine) {
             applyLocalForceDeg(20, 0);
         }
@@ -92,6 +99,8 @@ public class Ship extends SpaceBody implements KeyDownListener, KeyUpListener {
         setAngleRad(0);
         setAngularVelocity(0);
         setVelocity(0, 0);
+        invulnerable = true;
+        invulnerableTimeout = getSimulationTime() + 3;
         rightEngine = false;
         leftEngine = false;
         mainEngine = false;
@@ -99,7 +108,9 @@ public class Ship extends SpaceBody implements KeyDownListener, KeyUpListener {
 
     @Override
     protected void beginContact(Body other) {
-        removeEnergy(5);
+        if (!invulnerable) {
+            removeEnergy(5);
+        }
     }
 
     private void removeEnergy(double amount) {
